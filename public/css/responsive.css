@@ -189,6 +189,7 @@
     .message-input-container {
         padding: 8px 15px;
     }
+<<<<<<< HEAD
 }
 
 /* Enhanced Responsive Styles */
@@ -577,4 +578,6 @@
     .message-input-container {
         padding-bottom: max(15px, env(safe-area-inset-bottom));
     }
+=======
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
 }

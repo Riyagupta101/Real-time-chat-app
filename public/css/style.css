@@ -1730,6 +1730,7 @@ body.dark-mode .call-status {
 body.dark-mode .incoming-call-notification {
     background: #334155;
     color: #f1f5f9;
+<<<<<<< HEAD
 }
 
 /* Welcome Container Styles */
@@ -2161,4 +2162,6 @@ body.dark-mode .media-item.clear-filter:hover {
         right: 10px;
         min-width: 160px;
     }
+=======
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
 }

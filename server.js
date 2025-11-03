@@ -61,7 +61,11 @@ const callSchema = new mongoose.Schema({
   receiverId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   callType: { type: String, enum: ['audio', 'video'], required: true },
   status: { type: String, enum: ['missed', 'answered', 'rejected'], required: true },
+<<<<<<< HEAD
   duration: { type: Number, default: 0 },
+=======
+  duration: { type: Number, default: 0 }, // in seconds
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
   timestamp: { type: Date, default: Date.now }
 });
 
@@ -75,7 +79,15 @@ const JWT_SECRET = 'chat_app_secret_key_2024';
 // Store online users and their socket connections
 const onlineUsers = new Map();
 const userSockets = new Map();
+<<<<<<< HEAD
 const userConversations = new Map();
+=======
+
+// Store user conversations (who has chatted with whom)
+const userConversations = new Map();
+
+// Store active calls
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
 const activeCalls = new Map();
 
 io.on('connection', (socket) => {
@@ -105,7 +117,12 @@ io.on('connection', (socket) => {
       
       await User.findByIdAndUpdate(user._id, { 
         online: true, 
+<<<<<<< HEAD
         lastSeen: new Date()
+=======
+        lastSeen: new Date(),
+        avatar: user.avatar || user.name.charAt(0).toUpperCase()
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
       });
       
       socket.userId = user._id.toString();
@@ -125,6 +142,10 @@ io.on('connection', (socket) => {
       
       console.log('✅ Login successful:', user.email);
       socket.emit('auth_success', userData);
+<<<<<<< HEAD
+=======
+      
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
       socket.broadcast.emit('user_online', user._id.toString());
       
     } catch (error) {
@@ -164,6 +185,10 @@ io.on('connection', (socket) => {
       onlineUsers.set(newUser._id.toString(), true);
       userSockets.set(newUser._id.toString(), socket.id);
       
+<<<<<<< HEAD
+=======
+      // Initialize conversations for new user
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
       userConversations.set(newUser._id.toString(), new Set());
       
       const userData = {
@@ -177,6 +202,10 @@ io.on('connection', (socket) => {
       console.log('✅ Registration successful:', newUser.email);
       socket.emit('auth_success', userData);
       
+<<<<<<< HEAD
+=======
+      // Broadcast new user to all online users
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
       const newUserContact = {
         id: newUser._id.toString(),
         name: newUser.name,
@@ -220,6 +249,10 @@ io.on('connection', (socket) => {
       onlineUsers.set(user._id.toString(), true);
       userSockets.set(user._id.toString(), socket.id);
       
+<<<<<<< HEAD
+=======
+      // Load user's conversations
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
       await loadUserConversations(user._id.toString());
       
       const userData = {
@@ -232,6 +265,10 @@ io.on('connection', (socket) => {
       
       console.log('✅ User authenticated:', user.email);
       socket.emit('auth_success', userData);
+<<<<<<< HEAD
+=======
+      
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
       socket.broadcast.emit('user_online', user._id.toString());
       
     } catch (error) {
@@ -243,11 +280,16 @@ io.on('connection', (socket) => {
   // Load user conversations
   async function loadUserConversations(userId) {
     try {
+<<<<<<< HEAD
       const messages = await Message.find({
+=======
+      const conversations = await Message.find({
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
         $or: [
           { senderId: userId },
           { receiverId: userId }
         ]
+<<<<<<< HEAD
       });
       
       const userConvos = new Set();
@@ -257,6 +299,14 @@ io.on('connection', (socket) => {
         }
         if (msg.receiverId.toString() !== userId) {
           userConvos.add(msg.receiverId.toString());
+=======
+      }).distinct('senderId receiverId');
+      
+      const userConvos = new Set();
+      conversations.forEach(conv => {
+        if (conv.toString() !== userId) {
+          userConvos.add(conv.toString());
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
         }
       });
       
@@ -267,7 +317,11 @@ io.on('connection', (socket) => {
     }
   }
   
+<<<<<<< HEAD
   // Get all users
+=======
+  // Get all users (for showing all registered users)
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
   socket.on('get_all_users', async () => {
     try {
       if (!socket.userId) {
@@ -281,6 +335,10 @@ io.on('connection', (socket) => {
         _id: { $ne: socket.userId } 
       }).select('name email avatar online lastSeen');
       
+<<<<<<< HEAD
+=======
+      // Get last messages for users who have conversations
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
       const usersWithLastMessage = await Promise.all(
         allUsers.map(async (user) => {
           const lastMessage = await Message.findOne({
@@ -325,15 +383,23 @@ io.on('connection', (socket) => {
       const userConvos = userConversations.get(socket.userId) || new Set();
       console.log(`💭 User has conversations with: ${Array.from(userConvos).join(', ')}`);
       
+<<<<<<< HEAD
       if (userConvos.size === 0) {
         socket.emit('contacts_list', []);
         return;
       }
       
+=======
+      // Get users with whom current user has conversations
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
       const usersWithConversations = await User.find({ 
         _id: { $in: Array.from(userConvos) } 
       }).select('name email avatar online lastSeen');
       
+<<<<<<< HEAD
+=======
+      // Get last messages for each contact
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
       const contactsWithLastMessage = await Promise.all(
         usersWithConversations.map(async (user) => {
           const lastMessage = await Message.findOne({
@@ -361,7 +427,10 @@ io.on('connection', (socket) => {
       
     } catch (error) {
       console.error('❌ Error fetching contacts:', error);
+<<<<<<< HEAD
       socket.emit('contacts_list', []);
+=======
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
     }
   });
   
@@ -400,17 +469,24 @@ io.on('connection', (socket) => {
     }
   });
   
+<<<<<<< HEAD
   // Get conversation history - FIXED VERSION
+=======
+  // Get conversation history
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
   socket.on('get_conversation', async (data) => {
     try {
       const { contactId } = data;
       console.log('💭 Getting conversation with:', contactId);
       
+<<<<<<< HEAD
       if (!socket.userId || !contactId) {
         console.log('❌ Missing user ID or contact ID');
         return;
       }
 
+=======
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
       const messages = await Message.find({
         $or: [
           { senderId: socket.userId, receiverId: contactId },
@@ -418,10 +494,14 @@ io.on('connection', (socket) => {
         ]
       })
       .sort({ timestamp: 1 })
+<<<<<<< HEAD
       .populate('senderId', 'name avatar')
       .lean();
       
       console.log('📨 Found', messages.length, 'messages in conversation');
+=======
+      .populate('senderId', 'name avatar');
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
       
       const formattedMessages = messages.map(msg => ({
         id: msg._id.toString(),
@@ -436,7 +516,11 @@ io.on('connection', (socket) => {
         type: msg.senderId._id.toString() === socket.userId ? 'sent' : 'received'
       }));
       
+<<<<<<< HEAD
       console.log('📨 Sending', formattedMessages.length, 'messages to client');
+=======
+      console.log('📨 Sending', formattedMessages.length, 'messages');
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
       socket.emit('conversation_history', {
         contactId,
         messages: formattedMessages
@@ -444,10 +528,13 @@ io.on('connection', (socket) => {
       
     } catch (error) {
       console.error('❌ Error fetching conversation:', error);
+<<<<<<< HEAD
       socket.emit('conversation_history', {
         contactId: data.contactId,
         messages: []
       });
+=======
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
     }
   });
   
@@ -511,6 +598,10 @@ io.on('connection', (socket) => {
       if (receiverSocketId) {
         io.to(receiverSocketId).emit('new_message', messageData);
         
+<<<<<<< HEAD
+=======
+        // Send notification for file messages
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
         if (messageType !== 'text') {
           io.to(receiverSocketId).emit('file_message_notification', {
             from: socket.userId,
@@ -533,6 +624,10 @@ io.on('connection', (socket) => {
       const { receiverId, fileUrl, fileName, fileSize, messageType } = data;
       console.log('📎 Sending file message to:', receiverId, 'File:', fileName);
       
+<<<<<<< HEAD
+=======
+      // Add to conversations
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
       if (!userConversations.has(socket.userId)) {
         userConversations.set(socket.userId, new Set());
       }
@@ -574,11 +669,19 @@ io.on('connection', (socket) => {
         type: 'received'
       };
       
+<<<<<<< HEAD
+=======
+      // Send to sender
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
       socket.emit('new_message', {
         ...messageData,
         type: 'sent'
       });
       
+<<<<<<< HEAD
+=======
+      // Send to receiver if online
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
       const receiverSocketId = userSockets.get(receiverId);
       if (receiverSocketId) {
         io.to(receiverSocketId).emit('new_message', messageData);
@@ -619,12 +722,21 @@ io.on('connection', (socket) => {
   });
 
   // VIDEO/AUDIO CALL FUNCTIONALITY
+<<<<<<< HEAD
+=======
+
+  // Initiate call
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
   socket.on('initiate_call', (data) => {
     const { receiverId, callType } = data;
     console.log(`📞 ${callType} call initiated from ${socket.userId} to ${receiverId}`);
     
     const receiverSocketId = userSockets.get(receiverId);
     if (receiverSocketId) {
+<<<<<<< HEAD
+=======
+      // Store call information
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
       activeCalls.set(socket.userId, { receiverId, callType, status: 'calling' });
       activeCalls.set(receiverId, { callerId: socket.userId, callType, status: 'ringing' });
       
@@ -639,17 +751,29 @@ io.on('connection', (socket) => {
     }
   });
 
+<<<<<<< HEAD
+=======
+  // Answer call
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
   socket.on('answer_call', async (data) => {
     const { callerId } = data;
     console.log(`📞 Call answered by ${socket.userId} from ${callerId}`);
     
     const callerSocketId = userSockets.get(callerId);
     if (callerSocketId) {
+<<<<<<< HEAD
+=======
+      // Update call status
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
       activeCalls.set(callerId, { ...activeCalls.get(callerId), status: 'answered' });
       activeCalls.set(socket.userId, { ...activeCalls.get(socket.userId), status: 'answered' });
       
       io.to(callerSocketId).emit('call_answered', { receiverId: socket.userId });
       
+<<<<<<< HEAD
+=======
+      // Create call record
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
       const call = new Call({
         callerId: callerId,
         receiverId: socket.userId,
@@ -662,6 +786,10 @@ io.on('connection', (socket) => {
     }
   });
 
+<<<<<<< HEAD
+=======
+  // Reject call
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
   socket.on('reject_call', async (data) => {
     const { callerId } = data;
     console.log(`📞 Call rejected by ${socket.userId} from ${callerId}`);
@@ -670,6 +798,10 @@ io.on('connection', (socket) => {
     if (callerSocketId) {
       io.to(callerSocketId).emit('call_rejected', { receiverId: socket.userId });
       
+<<<<<<< HEAD
+=======
+      // Create call record for missed call
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
       const call = new Call({
         callerId: callerId,
         receiverId: socket.userId,
@@ -680,11 +812,19 @@ io.on('connection', (socket) => {
       });
       await call.save();
       
+<<<<<<< HEAD
+=======
+      // Clean up
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
       activeCalls.delete(callerId);
       activeCalls.delete(socket.userId);
     }
   });
 
+<<<<<<< HEAD
+=======
+  // End call
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
   socket.on('end_call', async (data) => {
     const { otherUserId, duration } = data;
     console.log(`📞 Call ended by ${socket.userId} with ${otherUserId}, duration: ${duration}s`);
@@ -693,18 +833,30 @@ io.on('connection', (socket) => {
     if (otherUserSocketId) {
       io.to(otherUserSocketId).emit('call_ended', { endedBy: socket.userId });
       
+<<<<<<< HEAD
+=======
+      // Update call duration if call was answered
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
       if (activeCalls.has(socket.userId)) {
         await Call.findOneAndUpdate(
           { 
             callerId: { $in: [socket.userId, otherUserId] },
             receiverId: { $in: [socket.userId, otherUserId] },
+<<<<<<< HEAD
             timestamp: { $gte: new Date(Date.now() - 300000) }
+=======
+            timestamp: { $gte: new Date(Date.now() - 300000) } // last 5 minutes
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
           },
           { duration: duration },
           { sort: { timestamp: -1 } }
         );
       }
       
+<<<<<<< HEAD
+=======
+      // Clean up
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
       activeCalls.delete(socket.userId);
       activeCalls.delete(otherUserId);
     }
@@ -771,6 +923,19 @@ io.on('connection', (socket) => {
     }
   });
   
+<<<<<<< HEAD
+=======
+  // Handle new user added
+  socket.on('new_user_added', (newUser) => {
+    console.log('🆕 New user added notification received:', newUser.name);
+  });
+  
+  // Handle file message notification
+  socket.on('file_message_notification', (data) => {
+    console.log('📎 File message notification:', data);
+  });
+  
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
   // Handle disconnection
   socket.on('disconnect', async () => {
     console.log('👤 User disconnected:', socket.userId);
@@ -781,6 +946,10 @@ io.on('connection', (socket) => {
         onlineUsers.delete(socket.userId);
         userSockets.delete(socket.userId);
         
+<<<<<<< HEAD
+=======
+        // End any active calls
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
         if (activeCalls.has(socket.userId)) {
           const callData = activeCalls.get(socket.userId);
           const otherUserId = callData.callerId === socket.userId ? callData.receiverId : callData.callerId;

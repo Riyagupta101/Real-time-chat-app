@@ -11,8 +11,11 @@ class ChatManager {
         this.messageIdCounter = 1;
         this.currentUser = null;
         this.showingSearchResults = false;
+<<<<<<< HEAD
         this.archivedChats = JSON.parse(localStorage.getItem('archivedChats')) || [];
         this.pinnedChats = JSON.parse(localStorage.getItem('pinnedChats')) || [];
+=======
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
     }
     
     init(currentUser) {
@@ -27,6 +30,7 @@ class ChatManager {
         this.setupContactHandlers();
         this.setupSearchHandlers();
         this.setupMessageHandlers();
+<<<<<<< HEAD
         
         // Show welcome message only if no contact is selected
         if (!this.currentContact) {
@@ -95,6 +99,8 @@ class ChatManager {
         
         if (videoCallBtn) videoCallBtn.style.display = show ? 'flex' : 'none';
         if (audioCallBtn) audioCallBtn.style.display = show ? 'flex' : 'none';
+=======
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
     }
     
     setupContactHandlers() {
@@ -109,6 +115,10 @@ class ChatManager {
                     if (this.showingSearchResults) {
                         contact = this.searchResults.find(c => c.id === contactId);
                         if (contact) {
+<<<<<<< HEAD
+=======
+                            // Start new conversation with searched user
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
                             this.startNewConversation(contact);
                         }
                     } else {
@@ -118,6 +128,7 @@ class ChatManager {
                         }
                     }
                 }
+<<<<<<< HEAD
                 
                 // Handle three dots menu click
                 if (e.target.closest('.contact-menu-btn')) {
@@ -190,6 +201,9 @@ class ChatManager {
                     `Notifications ${contact.muted ? 'muted' : 'unmuted'} for ${contact.name}`
                 );
                 break;
+=======
+            });
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
         }
     }
     
@@ -203,6 +217,10 @@ class ChatManager {
 
     setupMessageHandlers() {
         if (window.chatApp && window.chatApp.socket) {
+<<<<<<< HEAD
+=======
+            // Handle file message errors
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
             window.chatApp.socket.on('file_message_error', (data) => {
                 console.error('❌ File message error:', data.error);
                 notificationManager.showInAppNotification("File Error", "Failed to send file message");
@@ -210,6 +228,7 @@ class ChatManager {
         }
     }
     
+<<<<<<< HEAD
     // Archive a chat
     archiveChat(contactId) {
         if (!this.archivedChats.includes(contactId)) {
@@ -272,6 +291,8 @@ class ChatManager {
         this.renderContacts();
     }
     
+=======
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
     // Show search results
     showSearchResults(results) {
         this.searchResults = results;
@@ -311,9 +332,17 @@ class ChatManager {
     
     // Start new conversation with searched user
     startNewConversation(contact) {
+<<<<<<< HEAD
         let existingContact = this.contacts.find(c => c.id === contact.id);
         
         if (!existingContact) {
+=======
+        // Check if contact already exists in contacts
+        let existingContact = this.contacts.find(c => c.id === contact.id);
+        
+        if (!existingContact) {
+            // Add to contacts
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
             existingContact = {
                 ...contact,
                 lastMessage: 'Start chatting...',
@@ -326,15 +355,27 @@ class ChatManager {
         this.switchContact(existingContact);
         this.showingSearchResults = false;
         
+<<<<<<< HEAD
+=======
+        // Clear search input
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
         const searchInput = document.getElementById('search-contacts');
         if (searchInput) {
             searchInput.value = '';
         }
         
+<<<<<<< HEAD
         this.renderContacts();
     }
     
     // Render contacts list with pinned, archived, and normal chats
+=======
+        // Show normal contacts
+        this.renderContacts();
+    }
+    
+    // Render contacts list (only users with conversations)
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
     renderContacts() {
         this.showingSearchResults = false;
         const contactsContainer = document.getElementById('contacts-container');
@@ -353,6 +394,7 @@ class ChatManager {
             return;
         }
         
+<<<<<<< HEAD
         // Separate pinned, archived, and normal chats
         const pinnedContacts = this.contacts.filter(contact => this.pinnedChats.includes(contact.id));
         const archivedContacts = this.contacts.filter(contact => this.archivedChats.includes(contact.id));
@@ -445,6 +487,23 @@ class ChatManager {
         `;
         
         container.appendChild(contactElement);
+=======
+        this.contacts.forEach(contact => {
+            const contactElement = document.createElement('div');
+            contactElement.className = `contact ${contact.id === this.currentContact?.id ? 'active' : ''}`;
+            contactElement.setAttribute('data-contact-id', contact.id);
+            contactElement.innerHTML = `
+                <div class="contact-avatar ${contact.online ? 'online' : ''}">${contact.avatar}</div>
+                <div class="contact-info">
+                    <div class="contact-name">${contact.name} ${contact.muted ? '<i class="fas fa-bell-slash" style="color: #6c757d; margin-left: 5px;"></i>' : ''}</div>
+                    <div class="contact-preview">${contact.lastMessage || 'No messages yet'}</div>
+                </div>
+                <div class="contact-time">${contact.lastTime || ''}</div>
+            `;
+            
+            contactsContainer.appendChild(contactElement);
+        });
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
     }
     
     // Render messages with media support
@@ -454,6 +513,7 @@ class ChatManager {
         
         messagesContainer.innerHTML = '';
         
+<<<<<<< HEAD
         // Filter messages by type if media filter is active
         let messagesToShow = this.messages;
         if (this.currentMediaFilter) {
@@ -474,6 +534,9 @@ class ChatManager {
         }
         
         messagesToShow.forEach(message => {
+=======
+        this.messages.forEach(message => {
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
             const isSent = message.senderId === this.currentUser.id;
             const messageElement = document.createElement('div');
             messageElement.className = `message ${isSent ? 'sent' : 'received'}`;
@@ -541,6 +604,7 @@ class ChatManager {
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
     
+<<<<<<< HEAD
     // Media filter methods
     setMediaFilter(filterType) {
         this.currentMediaFilter = filterType;
@@ -579,6 +643,13 @@ class ChatManager {
         // Store last active contact
         localStorage.setItem('lastActiveContact', contact.id);
         
+=======
+    // Switch to a different contact
+    switchContact(contact) {
+        this.currentContact = contact;
+        this.renderContacts();
+        
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
         const activeContactName = document.getElementById('active-contact-name');
         const activeContactStatus = document.getElementById('active-contact-status');
         const activeContactAvatar = document.getElementById('active-contact-avatar');
@@ -603,8 +674,18 @@ class ChatManager {
         }
         if (panelContactAvatar) panelContactAvatar.textContent = contact.avatar;
         
+<<<<<<< HEAD
         // Show call buttons when contact is selected
         this.toggleCallButtons(true);
+=======
+        const muteNotificationsBtn = document.getElementById('mute-notifications');
+        if (muteNotificationsBtn) {
+            muteNotificationsBtn.innerHTML = `
+                <i class="fas fa-bell${contact.muted ? '' : '-slash'}"></i> 
+                ${contact.muted ? 'Unmute' : 'Mute'} notifications
+            `;
+        }
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
         
         if (window.chatApp && window.chatApp.socket) {
             window.chatApp.socket.emit('get_conversation', { contactId: contact.id });
@@ -689,7 +770,11 @@ class ChatManager {
         console.log('✅ File message sent locally');
     }
     
+<<<<<<< HEAD
     // Receive a message
+=======
+    // Receive a message - FIXED VERSION
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
     receiveMessage(message) {
         console.log('💬 Receiving message:', message);
         
@@ -702,6 +787,10 @@ class ChatManager {
         );
         
         // Add message to current conversation if it's from the current contact
+<<<<<<< HEAD
+=======
+        // OR if we're viewing the conversation with the sender
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
         if (this.currentContact && 
             (message.senderId === this.currentContact.id || message.receiverId === this.currentContact.id)) {
             this.messages.push({
@@ -725,6 +814,10 @@ class ChatManager {
             this.renderContacts();
             console.log('✅ Contact last message updated');
         } else if (message.senderId !== this.currentUser.id) {
+<<<<<<< HEAD
+=======
+            // If this is a new contact, add them to contacts
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
             this.addNewContact(message.senderId);
         }
         
@@ -747,9 +840,16 @@ class ChatManager {
     // Add new contact when receiving message from unknown user
     async addNewContact(userId) {
         try {
+<<<<<<< HEAD
             const newContact = {
                 id: userId,
                 name: 'Unknown User',
+=======
+            // In real app, you would fetch user details from server
+            const newContact = {
+                id: userId,
+                name: 'Unknown User', // This would be fetched from server
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
                 avatar: 'U',
                 online: true,
                 lastSeen: new Date(),
@@ -866,6 +966,31 @@ class ChatManager {
         }
     }
     
+<<<<<<< HEAD
+=======
+    // Toggle mute for current contact
+    toggleMuteContact() {
+        if (!this.currentContact) return;
+        
+        this.currentContact.muted = !this.currentContact.muted;
+        
+        const muteNotificationsBtn = document.getElementById('mute-notifications');
+        if (muteNotificationsBtn) {
+            muteNotificationsBtn.innerHTML = `
+                <i class="fas fa-bell${this.currentContact.muted ? '' : '-slash'}"></i> 
+                ${this.currentContact.muted ? 'Unmute' : 'Mute'} notifications
+            `;
+        }
+        
+        this.renderContacts();
+        
+        notificationManager.showInAppNotification(
+            "Notifications", 
+            `Notifications ${this.currentContact.muted ? 'muted' : 'unmuted'} for ${this.currentContact.name}`
+        );
+    }
+    
+>>>>>>> 4eefa1a007b8d6fd34d30f5ca7c4e04cc5ce318d
     // Refresh contacts from server
     refreshContacts() {
         if (window.chatApp && window.chatApp.socket) {
